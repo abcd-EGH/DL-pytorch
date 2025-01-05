@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 from torchvision import datasets, transforms
 
 from NN import NeuralNetwork
-from utils import set_seed
+from utils import set_seed, train_model
 
 # 시드 설정
 set_seed(seed=777)
@@ -16,52 +16,6 @@ set_seed(seed=777)
 # GPU 설정
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(f"Using device: {device}")
-
-# 학습 및 평가 함수
-def train_model(model, train_loader, test_loader, criterion, optimizer, epochs):
-    model.to(device)
-    metrics = []
-
-    for epoch in range(epochs):
-        model.train()
-        running_loss = 0.0
-
-        for x_batch, y_batch in train_loader:
-            x_batch = x_batch.to(device)
-            y_batch = y_batch.to(device)
-
-            optimizer.zero_grad()
-            outputs = model(x_batch)
-            loss = criterion(outputs, y_batch)
-            loss.backward()
-            optimizer.step()
-
-            running_loss += loss.item() * x_batch.size(0)
-
-        avg_train_loss = running_loss / len(train_loader.dataset)
-
-        # 테스트 정확도 측정
-        model.eval()
-        correct = 0
-        total = 0
-        with torch.no_grad():
-            for x_batch, y_batch in test_loader:
-                x_batch = x_batch.to(device)
-                y_batch = y_batch.to(device)
-                outputs = model(x_batch)
-                
-                # 예측 확률 계산 시 Softmax 적용
-                probabilities = torch.softmax(outputs, dim=1)
-                _, predicted = torch.max(probabilities, 1)
-                total += y_batch.size(0)
-                correct += (predicted == y_batch).sum().item()
-
-        accuracy = correct / total
-        metrics.append([avg_train_loss, accuracy])
-
-        print(f"Epoch [{epoch+1}/{epochs}], Loss: {avg_train_loss:.4f}, Accuracy: {accuracy:.4f}")
-
-    return metrics
 
 # 전체 학습 과정을 함수로 묶기
 def train_and_compare_models(learning_rate=0.001, epochs=10, batch_size=64):
@@ -98,10 +52,10 @@ def train_and_compare_models(learning_rate=0.001, epochs=10, batch_size=64):
     optimizer_no_bn = optim.Adam(model_no_bn.parameters(), lr=learning_rate)
 
     print("\nTraining model WITH Batch Normalization:")
-    metrics_bn = train_model(model_bn, train_loader, test_loader, criterion_bn, optimizer_bn, epochs)
+    metrics_bn = train_model(model_bn, train_loader, test_loader, criterion_bn, optimizer_bn, epochs, device=device)
 
     print("\nTraining model WITHOUT Batch Normalization:")
-    metrics_no_bn = train_model(model_no_bn, train_loader, test_loader, criterion_no_bn, optimizer_no_bn, epochs)
+    metrics_no_bn = train_model(model_no_bn, train_loader, test_loader, criterion_no_bn, optimizer_no_bn, epochs, device=device)
 
     # 결과 시각화
     metrics_bn = np.array(metrics_bn)
