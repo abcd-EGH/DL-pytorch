@@ -24,9 +24,8 @@ class NeuralNetwork(nn.Module):
             layers.append(nn.BatchNorm1d(hidden_size))
         layers.append(nn.Sigmoid())
         
-        # Output Layer
+        # Output Layer (Softmax 제거)
         layers.append(nn.Linear(hidden_size, output_size))
-        layers.append(nn.Softmax(dim=1))
         
         self.model = nn.Sequential(*layers)
 

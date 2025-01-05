@@ -27,7 +27,6 @@ def train_model(model, train_loader, test_loader, criterion, optimizer, epochs):
         running_loss = 0.0
 
         for x_batch, y_batch in train_loader:
-            # No need to flatten here as it's handled in the model
             x_batch = x_batch.to(device)
             y_batch = y_batch.to(device)
 
@@ -50,7 +49,10 @@ def train_model(model, train_loader, test_loader, criterion, optimizer, epochs):
                 x_batch = x_batch.to(device)
                 y_batch = y_batch.to(device)
                 outputs = model(x_batch)
-                _, predicted = torch.max(outputs, 1)
+                
+                # 예측 확률 계산 시 Softmax 적용
+                probabilities = torch.softmax(outputs, dim=1)
+                _, predicted = torch.max(probabilities, 1)
                 total += y_batch.size(0)
                 correct += (predicted == y_batch).sum().item()
 
