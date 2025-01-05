@@ -1,0 +1,10 @@
+--extra-index-url https://download.pytorch.org/whl/cu124
+torch==2.5.1+cu124
+--extra-index-url https://download.pytorch.org/whl/cu124
+torchvision==2.5.1+cu124
+--extra-index-url https://download.pytorch.org/whl/cu124
+torchaudio==2.5.1+cu124
+
+numpy==2.1.2
+matplotlib==3.9.2
+pandas==2.2.3
