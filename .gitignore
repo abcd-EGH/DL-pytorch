@@ -100,5 +100,12 @@ ENV/
 .ropeproject
 
 # mnist data
+MNIST_dataset/
 mnist_train.csv
 mnist_test.csv
+
+# in AE_VAE directory
+AE_img/
+VAE_img/
+auto_encoder.pth
+variational_autoencoder.pth
