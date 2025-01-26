@@ -110,5 +110,5 @@ VAE_img/
 auto_encoder.pth
 variational_autoencoder.pth
 
-# in cGAN directory
+# in GAN directory
 Fashion_MNIST_dataset/
